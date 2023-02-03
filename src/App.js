@@ -1,30 +1,37 @@
 import './App.css';
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { IntlProvider, FormattedMessage } from 'react-intl'
 
 function App() {
   const messages = {
     "tr-TR":{
       title: "Merhaba Sinan",
-      description:"3 yeni mesaj var"
+      description:"{count} yeni mesaj var"
     },
     "en-US":{
       title:"Hello Sinan",  
-      description:"you have 3 new messages"
+      description:"you have {count} new messages"
     }
   }
-  const [lang, setLang] = useState("tr-TR");
+  
+  const defaultLocale =  navigator.language;
+  const [locale, setLocale] = useState(defaultLocale);
+
+  useEffect(() =>{
+    localStorage.setItem("locale",locale); 
+  }, [locale])
+
   return (
     <div className="App">
-      <IntlProvider messages={messages[lang]}>
+      <IntlProvider locale={locale} messages={messages[locale]}>
         <FormattedMessage
           id="title"
         />
-        <p><FormattedMessage id='description' /></p>
+        <p><FormattedMessage id='description' values={{count : 3}} /></p>
         <br /><br />
-        <button onClick={() => setLang('tr-TR')}>Tr</button>
-        <button onClick={() => setLang('en-US')}>En</button>
+        <button onClick={() => setLocale('tr-TR')}>Tr</button>
+        <button onClick={() => setLocale('en-US')}>En</button>
       </IntlProvider>
     </div>
   );
